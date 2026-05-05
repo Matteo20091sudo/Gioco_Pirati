@@ -1,1 +1,0 @@
-{"ciurma": ["Capitano", "Timoniere", "Interprete"], "scorteCibo": ["Carne salata", "Acqua potabile"], "attrezzatura": ["Lanterna a olio", "Corde robuste"], "monete": 1670, "settimana": 3}
