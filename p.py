@@ -48,13 +48,8 @@ merciAcquistabili = [
 ]
  
 def pulisci_schermo():
-<<<<<<< HEAD
     os.system("cls" if os.name == "nt" else "clear")
 
-=======
-    os.system("cls")
- 
->>>>>>> 02edb589ad2208ad39efe1afd78e1583f4a43cf9
 def benvenuto():
     pulisci_schermo()
     print("Benvenuto nel gioco del nuovo mondo!!\n"
@@ -72,7 +67,6 @@ def benvenuto():
     return scelta
  
 def visualizzaEquipaggioAquistabile():
-<<<<<<< HEAD
     print("----------- EQUIPAGGIO ACQUISTABILE ----------")
     for i, c in enumerate(equipaggioAcquistabile):
         print(f"{i+1}. {c['nome']}, {c['prezzo']} monete d'oro a settimana")
@@ -84,7 +78,7 @@ def ingaggioEquipaggio():
           "In questa fase avrai la possibilità di ingaggiare tutti i membri della tua ciurma.\n"
           "Puoi ingaggiare al massimo 16 persone, e devi averne almeno 1 per ogni ruolo.\n"
           "I soldi verranno sottratti alla fine del viaggio.\n")
-    sleep(2)
+    sleep(10)
 
     totale = 0
     indice = 0
@@ -112,14 +106,14 @@ def ingaggioEquipaggio():
                     # controllo limite massimo
                     if totale + q > 16:
                         print("Supereresti il limite massimo di 16 membri.")
-                        print(f"Puoi aggiungerne al massimo {16 - totale}.")
+                        print(f"Puoi aggiungerne al massimo {16 - totale} {ruolo}.")
                     else:
                         quantita_valida = True
 
             except:
                 print("Formato non valido.")
 
-        # aggiorno quantità
+        
         equipaggioAcquistabile[indice]["quantita"] = q
         totale += q
 
@@ -136,13 +130,11 @@ def ingaggioEquipaggio():
         print("Ricomincia la fase di ingaggio...")
         sleep(3)
 
-        # reset
         for e in equipaggioAcquistabile:
             e["quantita"] = 0
 
         return ingaggioEquipaggio()
 
-    # CREAZIONE LISTA MEMBRI REALI
     tutto["equipaggio"] = []
 
     for e in equipaggioAcquistabile:
@@ -151,23 +143,87 @@ def ingaggioEquipaggio():
 
         i = 0
         while i < quantita:
-            membro = [ruolo, 100]   # come vuoi tu
+            membro = [ruolo, 100]   
             tutto["equipaggio"].append(membro)
             i += 1
 
-    print("\nEquipaggio registrato correttamente!")
+    print("Equipaggio registrato correttamente!")
     print("Membri totali:", len(tutto["equipaggio"]))
     sleep(2)
+
+def acquistoMerci():
+    pulisci_schermo()
+    print("Benvenuto nella terza fase del gioco, l'acquisto delle merci da barattare!\n"
+          "Una volta raggiunto il nuovo mondo, potrai commerciare con le popolazioni locali.\n"
+          "Le merci che acquisterai ora saranno fondamentali per ottenere perle, manufatti\n"
+          "e spezie, che determineranno il tuo guadagno finale.\n"
+          "In questa fase dovrai scegliere quante unità acquistare di ogni merce disponibile.\n"
+          "Fai attenzione: ogni merce ha un costo e le tue monete stanno diminuendo!\n")
+    sleep(10)
+    print(f"Monete disponibili: {tutto['monete']}\n")
+
+    # reset merci
+    tutto["merci"] = []
+
+    indice = 0
+
+    while indice < len(merciAcquistabili):
+
+        merce = merciAcquistabili[indice]
+        nome = merce["nome"]
+        prezzo = merce["prezzo"]
+
+        print(f"Merce: {nome} - Prezzo: {prezzo} monete per unità")
+
+        # input quantità valido
+        quantita_valida = False
+        while not quantita_valida:
+            try:
+                q = float(input(f"Inserisci QUANTE '{nome.upper()}' vuoi acquistare: "))
+
+                if q < 0:
+                    print("La quantità non può essere negativa.")
+                else:
+                    quantita_valida = True
+
+            except:
+                print("Formato non valido.")
+
+        # calcolo costo
+        costo = q * prezzo
+
+        # controllo che non si vada oltre al totale delle monete
+        if costo > tutto["monete"]:
+            print(f"Non hai abbastanza monete per acquistare {q} unità di {nome}.")
+            print("La quantità verrà impostata a 0.")
+            q = 0
+            costo = 0
+
+        # aggiorno le monete
+        tutto["monete"] -= costo
+
+        # salvo la merce cella struttura dati princiale
+        tutto["merci"].append([nome, q])
+
+        print(f"Hai acquistato {q} unità di {nome} per {costo} monete.")
+        print(f"Monete residue: {tutto['monete']}\n")
+
+        indice += 1  
+
+    print("ACQUISTO MERCI COMPLETATO")
+    print("Merci finali:")
+    for m in tutto["merci"]:
+        print(f"- {m[0]}: {m[1]}")
+
+    sleep(2)
+
 
         
 def calcolaPagaEquipaggio(settimane):
     totale = 0
 
-    # per ogni membro dell'equipaggio
     for membro in tutto["equipaggio"]:
-        ruolo = membro[0]  # es: "cuoco"
-
-        # cerco il prezzo settimanale del ruolo
+        ruolo = membro[0] 
         i = 0
         while i < len(equipaggioAcquistabile):
             if equipaggioAcquistabile[i]["nome"] == ruolo:
@@ -179,7 +235,12 @@ def calcolaPagaEquipaggio(settimane):
 
 def acquistoScorte():
     pulisci_schermo()
-    print("FASE DI ACQUISTO DELLE SCORTE DI CIBO")
+    print("Benvenuto nella seconda fase del gioco, l'acquisto delle scorte di cibo!\n"
+          "Durante il viaggio verso il nuovo mondo, il tuo equipaggio avrà bisogno di nutrirsi\n"
+          "e dissetarsi per mantenere alto il morale e sopravvivere alle intemperie.\n"
+          "Ricorda che ogni unità ha un costo e le tue monete non sono infinite!\n"
+          "Scegli con attenzione quanta verdura, frutta, carne e acqua portare con te.\n")
+    sleep(8)
     print(f"Monete disponibili: {tutto['monete']}")
 
     tutto["scorte di cibo"] = []
@@ -212,10 +273,8 @@ def acquistoScorte():
             quantita = 0
             costo = 0
 
-        # aggiorno monete
         tutto["monete"] -= costo
 
-        # salvo la scorta acquistata
         tutto["scorte di cibo"].append([nome, quantita])
 
         print(f"Hai acquistato {quantita} {unita} di {nome} per {costo} monete.")
@@ -228,67 +287,9 @@ def acquistoScorte():
 
     sleep(2)
 
-=======
-    print("-----------EQUIPAGGIO-AQUISTABILE----------")
-    for i,c in enumerate(equipaggioAcquistabile):
-        print(f"{i+1}. {c['nome']}, {c['prezzo']} monete d'oro a settimana")
-    print("-------------------------------------------")
- 
-def ingaggioEquipaggio():
-    pulisci_schermo()
-    print("Benvenuto nella prima fase del gioco, l'ingaggio dell'equipaggio!!!\n" \
-    "in questa fase avrai la possibilità di ingaggiare tutti i membri della tua ciurma\n" \
-    "puoi ingaggiare al massimo 16 persone, per salpare e iniziare il viaggio hai bisogno\n" \
-    "di una persona per ogni tipologia (quindi minimo 5 persone).\n" \
-    "devi avere almeno 1 personaggio di ogni tipo prima di andare avanti.\n" \
-    "i soldi verranno sottratti alla fine del viaggio (quindi occhio a quanto spendi)\n" \
-    "i soldi verranno spesi anche in caso di morte di un membro poichè ancdranno donati agli orfani\n" \
-    "e associazioni varie. ")
- 
-def ha_tutti_i_ruoli():
-    return all(count > 0 for count in equipaggioAcquistato.values())
- 
-def sceltaEquipaggio(membri):
-    ingaggioEquipaggio()
-    fine = False
-    visualizzaEquipaggioAquistabile()
-    while membri < 16 and not fine:
-        try:
-            scelta = int(input("Scegli il numero del membro dell'equipaggio che vuoi ingaggiare (0 per terminare) "))
-            if scelta == 0:
-                if ha_tutti_i_ruoli():
-                    fine = True
-                else:
-                    print("Devi avere almeno 1 personaggio per ogni ruolo prima di andare avanti.")
-            elif scelta == 1:
-                membri += 1
-                equipaggioAcquistato["cuoco"] += 1
-            elif scelta == 2:
-                membri += 1
-                equipaggioAcquistato["marinaio"] += 1
-            elif scelta == 3:
-                membri += 1
-                equipaggioAcquistato["meccanico"] += 1
-            elif scelta == 4:
-                membri += 1
-                equipaggioAcquistato["medico"] += 1
-            elif scelta == 5:
-                membri += 1
-                equipaggioAcquistato["navigatore"] += 1
-            else:
-                print("Numero sbagliato oppure non hai inserito una classe valida.")
-        except ValueError:
-            print("Formato sbagliato! Inserisci un numero.")
-    if not ha_tutti_i_ruoli():
-        print("Non hai completato l'equipaggio minimo. Riprova.")
-    return membri
- 
- 
->>>>>>> 02edb589ad2208ad39efe1afd78e1583f4a43cf9
 scelta = benvenuto()
 
 if scelta == "s":
-<<<<<<< HEAD
     ingaggioEquipaggio()          
     acquistoScorte()              
     calcolaPagaEquipaggio(settimanePreviste)
@@ -296,14 +297,5 @@ if scelta == "s":
 elif scelta == "n":
     print("Hai scelto di non iniziare il viaggio.")
 
-=======
-    sceltaEquipaggio(membri)
-    print(equipaggioAcquistato)
- 
- 
-   
-elif scelta == "n":
-    print("peccato, magari la prossima volta")
->>>>>>> 02edb589ad2208ad39efe1afd78e1583f4a43cf9
 else:
     print("Scelta non valida.")
