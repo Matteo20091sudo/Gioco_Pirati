@@ -146,8 +146,8 @@ def ingaggioEquipaggio():
         {"ruolo": "medico",     "costo": 25}
     ]
 
-    valido_globale = False
-    while not valido_globale:
+    valido = False
+    while not valido:
         tutto["equipaggio"] = []
         tutto["equipaggioIngaggiato"] = []
 
@@ -172,7 +172,7 @@ def ingaggioEquipaggio():
         if totale > 16:
             print(f"\nHai ingaggiato {totale} persone ma il massimo e' 16. Ricomincia.\n")
         else:
-            valido_globale = True
+            valido = True
 
     print(f"\nEquipaggio ingaggiato: {len(tutto['equipaggio'])} persone.")
     sleep(1.5)
