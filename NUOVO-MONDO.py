@@ -917,14 +917,12 @@ if scelta == "esci":
 
 elif scelta == "carica":
 
-    # Controllo esistenza file
     if not os.path.exists(SALVATAGGIO_FILE):
         print("Nessun salvataggio trovato. Avvio una nuova partita.")
         caricato = False
     else:
         dati = carica()
 
-        # Se il file contiene direttamente il dizionario "tutto"
         if isinstance(dati, dict) and "settimana" in dati:
             tutto = dati
             caricato = True
@@ -932,7 +930,6 @@ elif scelta == "carica":
             print("Salvataggio non valido. Avvio una nuova partita.")
             caricato = False
 
-    # Se non c'è salvataggio inizia una nuova partita
     if not caricato:
         ingaggioEquipaggio()
         acquistoScorte()
