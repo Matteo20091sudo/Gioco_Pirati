@@ -44,39 +44,23 @@ tutto = {
     "deltaMorale": 0
 }
 
-SALVATAGGIO_FILE = "dati_partita.json"
+SALVATAGGIO_FILE = ".\dati_partita.txt"
 
 # Salva e Carica
 
-def salva():
-    f = open(SALVATAGGIO_FILE, "w", encoding="utf-8")
-    try:
-        json.dump({"tutto": tutto, "eventi": eventi}, f, ensure_ascii=False, indent=2)
-    finally:
-        f.close()
-    print(f"Partita salvata in '{SALVATAGGIO_FILE}'.")
-
-
 def carica():
-    if not os.path.exists(SALVATAGGIO_FILE):
-        print("Nessun salvataggio trovato.")
-        return False
-
-    f = open(SALVATAGGIO_FILE, "r", encoding="utf-8")
     try:
-        stato = json.load(f)
-    finally:
-        f.close()
-
-    if not isinstance(stato, dict) or "tutto" not in stato or "eventi" not in stato:
-        print("Salvataggio non valido. Avvia una nuova partita.")
-        return False
-
-    tutto.clear()
-    tutto.update(stato["tutto"])
-    eventi[:] = stato["eventi"]
-    print("Partita caricata con successo!")
-    return True
+        with open(SALVATAGGIO_FILE, "r", encoding="utf-8") as f:
+            s = f.read()
+            if s.strip():
+                return json.loads(s)
+            else:
+                return tutto
+    except:
+        return tutto
+def salva():
+    with open(SALVATAGGIO_FILE, "w", encoding="utf-8") as f:
+        f.write(json.dumps(tutto))
 
 
 def pulisci_schermo():
@@ -932,29 +916,38 @@ if scelta == "esci":
     print("Alla prossima avventura!")
 
 elif scelta == "carica":
+
+    # Controllo esistenza file
     if not os.path.exists(SALVATAGGIO_FILE):
-        print("Nessun salvataggio trovato. Avvia una nuova partita.")
+        print("Nessun salvataggio trovato. Avvio una nuova partita.")
         caricato = False
     else:
-        caricato = carica()
-        if not caricato:
-            print("Errore nel caricamento del salvataggio. Avvio una nuova partita...")
-            sleep(1)
+        dati = carica()
 
+        # Se il file contiene direttamente il dizionario "tutto"
+        if isinstance(dati, dict) and "settimana" in dati:
+            tutto = dati
+            caricato = True
+        else:
+            print("Salvataggio non valido. Avvio una nuova partita.")
+            caricato = False
+
+    # Se non c'è salvataggio inizia una nuova partita
     if not caricato:
         ingaggioEquipaggio()
         acquistoScorte()
         acquistoMerci()
 
+    # CICLO DI GIOCO
     while tutto["settimana"] <= tutto["setViaggio"] and not tutto["gameover"]:
         pulisci_schermo()
         Step1()
-        input("\nPremi INVIO per continuare...")
+        input("Premi INVIO per continuare...")
 
         if not tutto["gameover"]:
             pulisci_schermo()
             step2()
-            input("\nPremi INVIO per continuare...")
+            input("Premi INVIO per continuare...")
 
             if not tutto["gameover"]:
                 pulisci_schermo()
@@ -963,23 +956,22 @@ elif scelta == "carica":
 
                 if not tutto["gameover"]:
                     if Decisione("Vuoi salvare la partita? (si/no): "):
+                        tutto["settimana"] += 1
                         salva()
+                        Step6()
 
-                input("\nPremi INVIO per continuare...")
-
-                if not tutto["gameover"]:
-                    Step6()
-                    tutto["settimana"] += 1
+                input("Premi INVIO per continuare...")
 
     pulisci_schermo()
     if tutto["gameover"]:
         print("=== GAME OVER ===")
-        print("\nStatistiche finali:")
+        print("Statistiche finali:")
         step4()
     else:
         faseNuovoMondo()
 
 else:  # nuova partita
+
     ingaggioEquipaggio()
     acquistoScorte()
     acquistoMerci()
@@ -987,12 +979,12 @@ else:  # nuova partita
     while tutto["settimana"] <= tutto["setViaggio"] and not tutto["gameover"]:
         pulisci_schermo()
         Step1()
-        input("\nPremi INVIO per continuare...")
+        input("Premi INVIO per continuare...")
 
         if not tutto["gameover"]:
             pulisci_schermo()
             step2()
-            input("\nPremi INVIO per continuare...")
+            input("Premi INVIO per continuare...")
 
             if not tutto["gameover"]:
                 pulisci_schermo()
@@ -1001,18 +993,16 @@ else:  # nuova partita
 
                 if not tutto["gameover"]:
                     if Decisione("Vuoi salvare la partita? (si/no): "):
+                        tutto["settimana"] += 1
                         salva()
+                        Step6()
 
-                input("\nPremi INVIO per continuare...")
-
-                if not tutto["gameover"]:
-                    Step6()
-                    tutto["settimana"] += 1
+                input("Premi INVIO per continuare...")
 
     pulisci_schermo()
     if tutto["gameover"]:
         print("=== GAME OVER ===")
-        print("\nStatistiche finali:")
+        print("Statistiche finali:")
         step4()
     else:
         faseNuovoMondo()
